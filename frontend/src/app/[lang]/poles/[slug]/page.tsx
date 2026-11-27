@@ -84,7 +84,7 @@ export default async function PolePage({ params }: PageProps<"/[lang]/poles/[slu
         </div>
       </section>
 
-      <ContactBlock t={{ ...t.contact, title: t.pole.contact }} />
+      <ContactBlock lang={lang} t={t.contact} title={t.pole.contact} preselect={pole.slug} />
     </>
   );
 }

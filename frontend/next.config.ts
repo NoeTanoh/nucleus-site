@@ -3,6 +3,11 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // The browser only talks to this origin; /api/* is forwarded to the Django service.
+  async rewrites() {
+    const backend = process.env.BACKEND_URL ?? "http://127.0.0.1:8000";
+    return [{ source: "/api/:path*", destination: `${backend}/api/:path*/` }];
+  },
   async headers() {
     return [
       {

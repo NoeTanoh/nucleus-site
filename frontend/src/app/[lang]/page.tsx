@@ -52,7 +52,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         </div>
       </section>
 
-      <ContactBlock t={t.contact} />
+      <ContactBlock lang={lang} t={t.contact} />
     </>
   );
 }
