@@ -7,6 +7,7 @@ import "../globals.css";
 import { getDict, isLocale, locales } from "@/lib/i18n";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { introGate } from "@/lib/introGate";
 
 export const dynamicParams = false;
 
@@ -37,7 +38,13 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   if (!isLocale(lang)) notFound();
   const t = getDict(lang);
   return (
-    <html lang={lang}>
+    <html lang={lang} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: introGate }} />
+        <noscript>
+          <style>{".intro-overlay{display:none}"}</style>
+        </noscript>
+      </head>
       <body>
         <a className="skip" href="#main">
           {lang === "fr" ? "Aller au contenu" : "Skip to content"}

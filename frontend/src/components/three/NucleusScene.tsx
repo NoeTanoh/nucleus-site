@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
-import { Billboard, Html } from "@react-three/drei";
+import { Billboard, Environment, Html, Lightformer, PerformanceMonitor } from "@react-three/drei";
 import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import {
@@ -19,6 +19,12 @@ type Props = {
   nodes: NucleusNode[];
   reducedMotion: boolean;
   onSelect: (slug: string) => void;
+  /** "low" = phones and modest GPUs: no glass transmission, fewer particles, lower DPR. */
+  tier: Tier;
+  /** Stop rendering entirely (hero off screen or tab hidden). */
+  paused: boolean;
+  onReady?: () => void;
+  onError?: () => void;
 };
 
 const OBSIDIAN = new THREE.Color("#101114");
@@ -300,22 +306,143 @@ function Rig({ children, reduced, frozen }: { children: React.ReactNode; reduced
   );
 }
 
-export default function NucleusScene({ nodes, reducedMotion, onSelect }: Props) {
+/**
+ * Convergence: three thin gold rings — data, technology, human intelligence — tilted on
+ * different axes so they cross around the crystal; a faceted glass shell holds them together.
+ */
+function Convergence({ reduced, tier }: { reduced: boolean; tier: Tier }) {
+  const rings = useRef<THREE.Group>(null);
+  const shell = useRef<THREE.Mesh>(null);
+  const tilts = useMemo<[number, number, number][]>(
+    () => [
+      [Math.PI / 2.2, 0, 0.2],
+      [0.35, 0.9, -0.5],
+      [-0.6, -0.7, 0.9],
+    ],
+    [],
+  );
+  useFrame(({ clock }, dt) => {
+    const t = clock.elapsedTime;
+    const intro = reduced ? 1 : easeOutExpo(clamp01((t - 0.5) / 2));
+    if (rings.current) {
+      rings.current.scale.setScalar(Math.max(intro, 0.001));
+      if (!reduced) {
+        rings.current.children.forEach((c, i) => {
+          c.rotation.z += dt * (0.05 + i * 0.025) * (i % 2 ? -1 : 1);
+        });
+      }
+    }
+    if (shell.current) {
+      shell.current.scale.setScalar(Math.max(intro, 0.001));
+      if (!reduced) shell.current.rotation.y -= dt * 0.03;
+    }
+  });
+  return (
+    <>
+      <group ref={rings}>
+        {tilts.map((r, i) => (
+          <mesh key={i} rotation={r}>
+            <torusGeometry args={[1.78 + i * 0.07, 0.011, 12, 220]} />
+            <meshStandardMaterial color={GOLD} metalness={1} roughness={0.28} envMapIntensity={1.4} />
+          </mesh>
+        ))}
+      </group>
+      {tier === "high" && (
+        <mesh ref={shell} rotation={[0.4, 0.2, 0]}>
+          <icosahedronGeometry args={[2.05, 0]} />
+          <meshPhysicalMaterial
+            transmission={1}
+            thickness={0.6}
+            roughness={0.12}
+            ior={1.4}
+            metalness={0}
+            color={IVORY}
+            attenuationColor={STEEL}
+            attenuationDistance={3}
+            transparent
+            opacity={0.6}
+            envMapIntensity={0.8}
+            flatShading
+          />
+        </mesh>
+      )}
+    </>
+  );
+}
+
+/** Procedural studio lighting baked into an environment map: no HDR file to download. */
+function Studio({ tier }: { tier: Tier }) {
+  return (
+    <>
+      <ambientLight intensity={0.15} />
+      <directionalLight position={[-4, 5, 4]} intensity={1.4} color={GOLD} />
+      <directionalLight position={[5, -2, -3]} intensity={0.8} color={STEEL} />
+      <Environment resolution={tier === "high" ? 256 : 64} frames={1}>
+        <Lightformer form="rect" intensity={2.2} color="#E8E6E1" position={[0, 4, -6]} scale={[10, 2, 1]} />
+        <Lightformer form="rect" intensity={1.6} color="#C6A56B" position={[-6, 0, 2]} rotation-y={Math.PI / 2} scale={[6, 1, 1]} />
+        <Lightformer form="ring" intensity={1.2} color="#526C78" position={[5, -2, 3]} scale={3} />
+      </Environment>
+    </>
+  );
+}
+
+/** Cinematic camera: a slow dolly-in on load, then scroll pushes it gently back and up. */
+function CameraRig({ reduced }: { reduced: boolean }) {
+  useFrame(({ clock, camera }, dt) => {
+    const t = clock.elapsedTime;
+    const intro = reduced ? 1 : easeOutExpo(clamp01(t / 4.5));
+    const scroll = Math.min(window.scrollY / window.innerHeight, 1.2);
+    const z = 13.5 - 3.5 * intro + (reduced ? 0 : scroll * 2.2);
+    const y = reduced ? 0 : scroll * -0.9;
+    camera.position.z = THREE.MathUtils.damp(camera.position.z, z, 4, dt);
+    camera.position.y = THREE.MathUtils.damp(camera.position.y, y, 4, dt);
+    camera.lookAt(0, camera.position.y * 0.5, 0);
+  });
+  return null;
+}
+
+/** Tells the page when the first frame has actually been drawn. */
+function ReadySignal({ onReady }: { onReady?: () => void }) {
+  const done = useRef(false);
+  useFrame(() => {
+    if (done.current) return;
+    done.current = true;
+    requestAnimationFrame(() => onReady?.());
+  });
+  return null;
+}
+
+export type Tier = "high" | "low";
+
+export default function NucleusScene({ nodes, reducedMotion, onSelect, tier, paused, onReady, onError }: Props) {
   const [active, setActive] = useState<string | null>(null);
-  const particles = typeof window !== "undefined" && window.innerWidth < 700 ? 1400 : 3200;
+  const [dpr, setDpr] = useState(tier === "high" ? 1.75 : 1.25);
+  const particles = tier === "high" ? 3200 : 1200;
 
   return (
     <Canvas
-      dpr={[1, 1.75]}
-      camera={{ position: [0, 0, 10], fov: 38 }}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      dpr={[1, dpr]}
+      frameloop={paused ? "never" : "always"}
+      camera={{ position: [0, 0, 13.5], fov: 38 }}
+      gl={{ antialias: tier === "high", alpha: true, powerPreference: tier === "high" ? "high-performance" : "low-power" }}
+      onCreated={({ gl }) => {
+        gl.domElement.addEventListener("webglcontextlost", (e) => {
+          e.preventDefault();
+          onError?.();
+        });
+      }}
       onPointerMissed={() => setActive(null)}
       aria-hidden
     >
+      <PerformanceMonitor onDecline={() => setDpr(1)} flipflops={2} onFallback={() => setDpr(1)} />
+      <Studio tier={tier} />
+      <CameraRig reduced={reducedMotion} />
+      <ReadySignal onReady={onReady} />
       <Rig reduced={reducedMotion} frozen={active !== null}>
         <Glow />
         <Core reduced={reducedMotion} />
         <Lattice reduced={reducedMotion} />
+        <Convergence reduced={reducedMotion} tier={tier} />
         <DataField reduced={reducedMotion} count={particles} />
         {nodes.map((n, i) => (
           <Orbit
