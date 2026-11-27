@@ -1,0 +1,61 @@
+name: Preview (GitHub Pages)
+
+# Publishes a static preview of the site. The Django backend is not deployed
+# here, so the contact form shows its error state on this preview.
+on:
+  push:
+    branches: [main, claude/project-thread-6u8yxy]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - id: pages
+        uses: actions/configure-pages@v5
+      - run: npm ci
+      # The locale proxy needs a server; the static preview uses a redirect page instead.
+      - run: rm src/proxy.ts
+      - run: npx next build
+        env:
+          STATIC_EXPORT: "1"
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+      - name: Root and 404 redirect to /fr/
+        env:
+          BASE: ${{ steps.pages.outputs.base_path }}
+        run: |
+          page="<!doctype html><meta charset=utf-8><title>NUCLÉUS</title><meta http-equiv=refresh content=\"0;url=$BASE/fr/\"><a href=\"$BASE/fr/\">NUCLÉUS</a>"
+          echo "$page" > out/index.html
+          [ -f out/404.html ] || echo "$page" > out/404.html
+          touch out/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
