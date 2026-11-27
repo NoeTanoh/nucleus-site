@@ -11,6 +11,7 @@ import { Symbol } from "./Symbol";
 export function SiteHeader({ lang, t }: { lang: Locale; t: Dict }) {
   const pathname = usePathname() ?? `/${lang}`;
   const [solid, setSolid] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
   const [lastPath, setLastPath] = useState(pathname);
   const reduce = useReducedMotion();
@@ -23,7 +24,16 @@ export function SiteHeader({ lang, t }: { lang: Locale; t: Dict }) {
   }
 
   useEffect(() => {
-    const onScroll = () => setSolid(window.scrollY > 40);
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setSolid(y > 40);
+      // Tuck the header away while reading down, bring it back on any upward scroll.
+      if (Math.abs(y - last) > 6) {
+        setHidden(y > last && y > 240);
+        last = y;
+      }
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -50,7 +60,7 @@ export function SiteHeader({ lang, t }: { lang: Locale; t: Dict }) {
   const current = (p: string) => (pathname.replace(/\/$/, "") === p ? "page" : undefined);
 
   return (
-    <header className="site-header" data-solid={solid || open} data-open={open}>
+    <header className="site-header" data-solid={solid || open} data-open={open} data-hidden={hidden && !open}>
       <div className="wrap">
         <Link href={href(lang, "home")} className="brand" aria-label="NUCLÉUS">
           <Symbol />

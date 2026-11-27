@@ -1670,3 +1670,209 @@ a.chip:hover {
     display: none;
   }
 }
+
+/* ==========================================================================
+   Motion layer (below the hero only). Active only with html.motion, which is
+   set for JS-enabled browsers without prefers-reduced-motion.
+   ========================================================================== */
+html.motion [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 2.2rem, 0);
+  transition:
+    opacity 0.9s var(--ease),
+    transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--ri, 0) * 80ms);
+}
+html.motion [data-reveal][data-in] {
+  opacity: 1;
+  transform: none;
+}
+/* Big statements rise from behind a mask */
+html.motion .display[data-reveal],
+html.motion .heading[data-reveal],
+html.motion .statement[data-reveal] {
+  clip-path: inset(0 0 100% 0);
+  transform: translate3d(0, 1.2rem, 0);
+  transition:
+    clip-path 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.6s var(--ease),
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+html.motion .display[data-reveal][data-in],
+html.motion .heading[data-reveal][data-in],
+html.motion .statement[data-reveal][data-in] {
+  clip-path: inset(0 0 -0.3em 0);
+  transform: none;
+}
+/* Rails draw themselves in orange */
+[data-line] {
+  position: relative;
+}
+html.motion [data-line]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.8s cubic-bezier(0.65, 0, 0.35, 1) 0.2s;
+  pointer-events: none;
+}
+html.motion [data-line][data-in]::before {
+  transform: scaleX(1);
+}
+@media (max-width: 999px) {
+  html.motion .rail[data-line]::before {
+    top: 0;
+    left: -1px;
+    width: 1px;
+    height: 100%;
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  html.motion .rail[data-line][data-in]::before {
+    transform: scaleY(1);
+  }
+}
+/* Rail dots pop in after their step */
+html.motion .rail > li[data-reveal]::before {
+  transform: scale(0);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: calc(var(--ri, 0) * 80ms + 0.5s);
+}
+html.motion .rail > li[data-in]::before {
+  transform: scale(1);
+}
+
+/* Scroll progress, thin orange line at the very top */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 2px;
+  z-index: 60;
+  background: linear-gradient(90deg, var(--navy), var(--accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+}
+html:not(.motion) .scroll-progress {
+  display: none;
+}
+
+/* Header tucks away on the way down */
+.site-header {
+  transition:
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+.site-header[data-hidden="true"] {
+  transform: translate3d(0, -100%, 0);
+}
+
+/* ---------- Micro-interactions ---------- */
+.btn {
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -12px rgba(19, 51, 96, 0.45);
+}
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+.pole-name,
+.pole-row .code {
+  transition:
+    color var(--dur) var(--ease),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pole-row {
+  position: relative;
+}
+.pole-row::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 1px;
+  width: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pole-row:hover::after,
+.pole-row:focus-visible::after {
+  transform: scaleX(1);
+}
+.pole-row:hover .pole-name,
+.pole-row:focus-visible .pole-name {
+  transform: translateX(0.6rem);
+}
+.pole-row:hover .code {
+  transform: translateX(0.3rem);
+}
+.solution-num,
+.rail-num,
+.empty-num {
+  transition: -webkit-text-stroke-color var(--dur) var(--ease), color 0.6s var(--ease);
+}
+.solution-list > li:hover .solution-num,
+.rail li:hover .rail-num {
+  color: var(--accent);
+}
+a.chip,
+.chip span {
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+a.chip:hover {
+  transform: translateY(-2px);
+}
+.foot-nav a {
+  display: inline-block;
+  transition: color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.foot-nav a:hover {
+  transform: translateX(0.25rem);
+}
+.cta-mark {
+  will-change: transform;
+}
+/* The empty-state numeral breathes slowly */
+html.motion .empty-num {
+  animation: breathe 5s ease-in-out infinite;
+}
+@keyframes breathe {
+  50% {
+    -webkit-text-stroke-color: var(--accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:hover,
+  a.chip:hover,
+  .foot-nav a:hover {
+    transform: none;
+  }
+  .pole-row:hover .pole-name,
+  .pole-row:hover .code {
+    transform: none;
+  }
+  .site-header[data-hidden="true"] {
+    transform: none;
+  }
+}

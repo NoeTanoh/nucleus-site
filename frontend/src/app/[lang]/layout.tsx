@@ -5,6 +5,7 @@ import { getDict, isLocale, locales } from "@/lib/i18n";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { introGate } from "@/lib/introGate";
+import { MotionLayer } from "@/components/MotionLayer";
 
 export const dynamicParams = false;
 
@@ -49,6 +50,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
         <SiteHeader lang={lang} t={t} />
         <main id="main">{children}</main>
         <SiteFooter lang={lang} t={t} />
+        <MotionLayer />
       </body>
     </html>
   );
