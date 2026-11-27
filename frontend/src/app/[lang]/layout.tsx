@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
-import "@fontsource-variable/jost";
 import "../globals.css";
 import { getDict, isLocale, locales } from "@/lib/i18n";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { introGate } from "@/lib/introGate";
+import { MotionLayer } from "@/components/MotionLayer";
 
 export const dynamicParams = false;
 
@@ -13,7 +14,7 @@ export function generateStaticParams() {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#0a1c3b",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };
@@ -35,14 +36,21 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   if (!isLocale(lang)) notFound();
   const t = getDict(lang);
   return (
-    <html lang={lang}>
+    <html lang={lang} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: introGate }} />
+        <noscript>
+          <style>{".intro-overlay{display:none}"}</style>
+        </noscript>
+      </head>
       <body>
         <a className="skip" href="#main">
           {lang === "fr" ? "Aller au contenu" : "Skip to content"}
         </a>
         <SiteHeader lang={lang} t={t} />
         <main id="main">{children}</main>
-        <SiteFooter t={t} />
+        <SiteFooter lang={lang} t={t} />
+        <MotionLayer />
       </body>
     </html>
   );

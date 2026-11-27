@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
-import { Billboard, Html } from "@react-three/drei";
+import { Billboard, Environment, Html, Lightformer, PerformanceMonitor } from "@react-three/drei";
 import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import {
@@ -19,12 +19,19 @@ type Props = {
   nodes: NucleusNode[];
   reducedMotion: boolean;
   onSelect: (slug: string) => void;
+  /** "low" = phones and modest GPUs: no glass transmission, fewer particles, lower DPR. */
+  tier: Tier;
+  /** Stop rendering entirely (hero off screen or tab hidden). */
+  paused: boolean;
+  onReady?: () => void;
+  onError?: () => void;
 };
 
+// NUCLEUS Prime brand palette (charter p.08)
 const NAVY = new THREE.Color("#133360");
+const WHITE = new THREE.Color("#FFFFFF");
 const ORANGE = new THREE.Color("#FC5E02");
-const AMBER = new THREE.Color("#FDB022");
-const MIST = new THREE.Color("#DFE6ED");
+const SKY = new THREE.Color("#3D8FD6");
 
 const easeOutExpo = (t: number) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t));
 const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
@@ -44,23 +51,26 @@ function Core({ reduced }: { reduced: boolean }) {
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uAmp: { value: 0.1 },
-      uNavy: { value: NAVY },
-      uOrange: { value: ORANGE },
-      uAmber: { value: AMBER },
+      uObsidian: { value: NAVY },
+      uSteel: { value: SKY },
+      uGold: { value: ORANGE },
+      uIvory: { value: WHITE },
     }),
     [],
   );
   useFrame(({ clock }, dt) => {
     const t = clock.elapsedTime;
-    if (mat.current) mat.current.uniforms.uTime.value = reduced ? 4 : t;
-    const s = reduced ? 1 : easeOutExpo(clamp01(t / 1.6));
+    if (mat.current) mat.current.uniforms.uTime.value = reduced ? 0 : t;
+    const s = reduced ? 1 : easeOutExpo(clamp01(t / 1.8));
     mesh.current?.scale.setScalar(Math.max(s, 0.001));
-    if (mesh.current && !reduced) mesh.current.rotation.y += dt * 0.08;
+    if (mesh.current && !reduced) {
+      mesh.current.rotation.y += dt * 0.07;
+      mesh.current.rotation.x = Math.sin(t * 0.15) * 0.25;
+    }
   });
   return (
-    <mesh ref={mesh}>
-      <icosahedronGeometry args={[1.05, 48]} />
+    <mesh ref={mesh} rotation={[0.3, 0.4, 0]}>
+      <icosahedronGeometry args={[1.15, 1]} />
       <shaderMaterial ref={mat} vertexShader={coreVertex} fragmentShader={coreFragment} uniforms={uniforms} />
     </mesh>
   );
@@ -69,7 +79,7 @@ function Core({ reduced }: { reduced: boolean }) {
 /** Faint geodesic lattice around the core: the "structure" around the molten data. */
 function Lattice({ reduced }: { reduced: boolean }) {
   const ref = useRef<THREE.LineSegments>(null);
-  const geo = useMemo(() => new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.42, 1)), []);
+  const geo = useMemo(() => new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.5, 0)), []);
   useFrame(({ clock }, dt) => {
     if (!ref.current) return;
     const s = reduced ? 1 : easeOutExpo(clamp01((clock.elapsedTime - 0.2) / 1.8));
@@ -81,13 +91,13 @@ function Lattice({ reduced }: { reduced: boolean }) {
   });
   return (
     <lineSegments ref={ref} geometry={geo}>
-      <lineBasicMaterial color={MIST} transparent opacity={0.16} depthWrite={false} />
+      <lineBasicMaterial color={ORANGE} transparent opacity={0.45} depthWrite={false} />
     </lineSegments>
   );
 }
 
 function Glow() {
-  const uniforms = useMemo(() => ({ uColor: { value: ORANGE }, uStrength: { value: 0.55 } }), []);
+  const uniforms = useMemo(() => ({ uColor: { value: SKY }, uStrength: { value: 0.22 } }), []);
   return (
     <Billboard>
       <mesh renderOrder={-1}>
@@ -98,7 +108,7 @@ function Glow() {
           uniforms={uniforms}
           transparent
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          blending={THREE.NormalBlending}
         />
       </mesh>
     </Billboard>
@@ -128,7 +138,7 @@ function DataField({ reduced, count }: { reduced: boolean; count: number }) {
       uniforms: {
         uTime: { value: 0 },
         uPixelRatio: { value: 1 },
-        uColor: { value: MIST },
+        uColor: { value: NAVY },
       },
     };
   }, [count]);
@@ -148,7 +158,7 @@ function DataField({ reduced, count }: { reduced: boolean; count: number }) {
         uniforms={uniforms}
         transparent
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={THREE.NormalBlending}
       />
     </points>
   );
@@ -213,7 +223,7 @@ function Orbit({
     }
     if (ring.current) {
       const m = ring.current.material as THREE.LineBasicMaterial;
-      const target = isActive ? 0.95 : dimmed ? 0.08 : 0.26;
+      const target = isActive ? 0.85 : dimmed ? 0.05 : 0.16;
       m.opacity = THREE.MathUtils.damp(m.opacity, target * intro, 8, dt);
     }
   });
@@ -234,11 +244,11 @@ function Orbit({
   return (
     <group ref={group} rotation={tilt}>
       <lineLoop ref={ring} geometry={ringGeo}>
-        <lineBasicMaterial color={isActive ? color : MIST} transparent opacity={0} depthWrite={false} />
+        <lineBasicMaterial color={isActive ? ORANGE : NAVY} transparent opacity={0} depthWrite={false} />
       </lineLoop>
       <mesh ref={dot}>
-        <sphereGeometry args={[0.075, 24, 24]} />
-        <meshBasicMaterial color={color} />
+        <sphereGeometry args={[0.06, 24, 24]} />
+        <meshBasicMaterial color={isActive ? ORANGE : color} />
         {isActive && (
           <Html zIndexRange={[20, 0]} style={{ pointerEvents: "none" }}>
             <div className="node-label" data-flip={flip}>
@@ -261,11 +271,11 @@ function Orbit({
         {/* enlarged hit target + soft halo */}
         <sphereGeometry args={[0.16, 16, 16]} />
         <meshBasicMaterial
-          color={color}
+          color={isActive ? ORANGE : color}
           transparent
-          opacity={isActive ? 0.35 : 0.12}
+          opacity={isActive ? 0.18 : 0.08}
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          blending={THREE.NormalBlending}
         />
       </mesh>
     </group>
@@ -297,22 +307,143 @@ function Rig({ children, reduced, frozen }: { children: React.ReactNode; reduced
   );
 }
 
-export default function NucleusScene({ nodes, reducedMotion, onSelect }: Props) {
+/**
+ * Convergence: three thin gold rings — data, technology, human intelligence — tilted on
+ * different axes so they cross around the crystal; a faceted glass shell holds them together.
+ */
+function Convergence({ reduced, tier }: { reduced: boolean; tier: Tier }) {
+  const rings = useRef<THREE.Group>(null);
+  const shell = useRef<THREE.Mesh>(null);
+  const tilts = useMemo<[number, number, number][]>(
+    () => [
+      [Math.PI / 2.2, 0, 0.2],
+      [0.35, 0.9, -0.5],
+      [-0.6, -0.7, 0.9],
+    ],
+    [],
+  );
+  useFrame(({ clock }, dt) => {
+    const t = clock.elapsedTime;
+    const intro = reduced ? 1 : easeOutExpo(clamp01((t - 0.5) / 2));
+    if (rings.current) {
+      rings.current.scale.setScalar(Math.max(intro, 0.001));
+      if (!reduced) {
+        rings.current.children.forEach((c, i) => {
+          c.rotation.z += dt * (0.05 + i * 0.025) * (i % 2 ? -1 : 1);
+        });
+      }
+    }
+    if (shell.current) {
+      shell.current.scale.setScalar(Math.max(intro, 0.001));
+      if (!reduced) shell.current.rotation.y -= dt * 0.03;
+    }
+  });
+  return (
+    <>
+      <group ref={rings}>
+        {tilts.map((r, i) => (
+          <mesh key={i} rotation={r}>
+            <torusGeometry args={[1.78 + i * 0.07, 0.011, 12, 220]} />
+            <meshStandardMaterial color={ORANGE} emissive={ORANGE} emissiveIntensity={0.35} metalness={0.35} roughness={0.3} envMapIntensity={1.2} />
+          </mesh>
+        ))}
+      </group>
+      {tier === "high" && (
+        <mesh ref={shell} rotation={[0.4, 0.2, 0]}>
+          <icosahedronGeometry args={[2.05, 0]} />
+          <meshPhysicalMaterial
+            transmission={1}
+            thickness={0.6}
+            roughness={0.12}
+            ior={1.4}
+            metalness={0}
+            color={WHITE}
+            attenuationColor={SKY}
+            attenuationDistance={3}
+            transparent
+            opacity={0.6}
+            envMapIntensity={0.8}
+            flatShading
+          />
+        </mesh>
+      )}
+    </>
+  );
+}
+
+/** Procedural studio lighting baked into an environment map: no HDR file to download. */
+function Studio({ tier }: { tier: Tier }) {
+  return (
+    <>
+      <ambientLight intensity={0.15} />
+      <directionalLight position={[-4, 5, 4]} intensity={1.4} color={ORANGE} />
+      <directionalLight position={[5, -2, -3]} intensity={0.8} color={SKY} />
+      <Environment resolution={tier === "high" ? 256 : 64} frames={1}>
+        <Lightformer form="rect" intensity={2.2} color="#FFFFFF" position={[0, 4, -6]} scale={[10, 2, 1]} />
+        <Lightformer form="rect" intensity={1.6} color="#FC5E02" position={[-6, 0, 2]} rotation-y={Math.PI / 2} scale={[6, 1, 1]} />
+        <Lightformer form="ring" intensity={1.2} color="#3D8FD6" position={[5, -2, 3]} scale={3} />
+      </Environment>
+    </>
+  );
+}
+
+/** Cinematic camera: a slow dolly-in on load, then scroll pushes it gently back and up. */
+function CameraRig({ reduced }: { reduced: boolean }) {
+  useFrame(({ clock, camera }, dt) => {
+    const t = clock.elapsedTime;
+    const intro = reduced ? 1 : easeOutExpo(clamp01(t / 4.5));
+    const scroll = Math.min(window.scrollY / window.innerHeight, 1.2);
+    const z = 13.5 - 3.5 * intro + (reduced ? 0 : scroll * 2.2);
+    const y = reduced ? 0 : scroll * -0.9;
+    camera.position.z = THREE.MathUtils.damp(camera.position.z, z, 4, dt);
+    camera.position.y = THREE.MathUtils.damp(camera.position.y, y, 4, dt);
+    camera.lookAt(0, camera.position.y * 0.5, 0);
+  });
+  return null;
+}
+
+/** Tells the page when the first frame has actually been drawn. */
+function ReadySignal({ onReady }: { onReady?: () => void }) {
+  const done = useRef(false);
+  useFrame(() => {
+    if (done.current) return;
+    done.current = true;
+    requestAnimationFrame(() => onReady?.());
+  });
+  return null;
+}
+
+export type Tier = "high" | "low";
+
+export default function NucleusScene({ nodes, reducedMotion, onSelect, tier, paused, onReady, onError }: Props) {
   const [active, setActive] = useState<string | null>(null);
-  const particles = typeof window !== "undefined" && window.innerWidth < 700 ? 1400 : 3200;
+  const [dpr, setDpr] = useState(tier === "high" ? 1.75 : 1.25);
+  const particles = tier === "high" ? 3200 : 1200;
 
   return (
     <Canvas
-      dpr={[1, 1.75]}
-      camera={{ position: [0, 0, 10], fov: 38 }}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      dpr={[1, dpr]}
+      frameloop={paused ? "never" : "always"}
+      camera={{ position: [0, 0, 13.5], fov: 38 }}
+      gl={{ antialias: tier === "high", alpha: true, powerPreference: tier === "high" ? "high-performance" : "low-power" }}
+      onCreated={({ gl }) => {
+        gl.domElement.addEventListener("webglcontextlost", (e) => {
+          e.preventDefault();
+          onError?.();
+        });
+      }}
       onPointerMissed={() => setActive(null)}
       aria-hidden
     >
+      <PerformanceMonitor onDecline={() => setDpr(1)} flipflops={2} onFallback={() => setDpr(1)} />
+      <Studio tier={tier} />
+      <CameraRig reduced={reducedMotion} />
+      <ReadySignal onReady={onReady} />
       <Rig reduced={reducedMotion} frozen={active !== null}>
         <Glow />
         <Core reduced={reducedMotion} />
         <Lattice reduced={reducedMotion} />
+        <Convergence reduced={reducedMotion} tier={tier} />
         <DataField reduced={reducedMotion} count={particles} />
         {nodes.map((n, i) => (
           <Orbit

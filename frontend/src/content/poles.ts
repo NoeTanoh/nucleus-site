@@ -9,7 +9,7 @@ export type Pole = {
   code: string; // official pôle number from the brief (01–07)
   name: string; // official English pôle name, used in both languages
   label: L; // short local name
-  hue: string; // accent used for this pôle's node in the 3D nucleus
+  hue: string; // node colour in the 3D nucleus (gold, ivory or light steel)
   lead: L;
   services: Service[];
   outcomes: L[];
@@ -80,7 +80,7 @@ export const poles: Pole[] = [
     code: "02",
     name: "Statistics & Data Analytics",
     label: { fr: "Statistique & analyse", en: "Statistics & analytics" },
-    hue: "#FD8A2A",
+    hue: "#133360",
     lead: {
       fr: "Transformer des données brutes en résultats chiffrés, testés et lisibles par ceux qui décident.",
       en: "Turning raw data into tested, quantified findings that decision-makers can read.",
@@ -205,7 +205,7 @@ export const poles: Pole[] = [
     code: "04",
     name: "Artificial Intelligence & Automation",
     label: { fr: "IA & automatisation", en: "AI & automation" },
-    hue: "#FDB022",
+    hue: "#FC5E02",
     lead: {
       fr: "Utiliser l'intelligence artificielle là où elle fait gagner du temps ou de la précision, et nulle part ailleurs.",
       en: "Using artificial intelligence where it saves time or adds precision, and nowhere else.",
@@ -250,7 +250,7 @@ export const poles: Pole[] = [
     code: "05",
     name: "Technology & Software Development",
     label: { fr: "Technologie & logiciel", en: "Technology & software" },
-    hue: "#6FB1EA",
+    hue: "#133360",
     lead: {
       fr: "Construire et maintenir les sites, applications et plateformes dont vos équipes ont besoin.",
       en: "Building and maintaining the websites, applications and platforms your teams need.",
@@ -302,7 +302,7 @@ export const poles: Pole[] = [
     code: "06",
     name: "Communication & Creative Studio",
     label: { fr: "Communication & studio", en: "Communication & studio" },
-    hue: "#FEEDE2",
+    hue: "#3D8FD6",
     lead: {
       fr: "Donner une forme claire et une voix cohérente à ce que votre organisation fait.",
       en: "Giving what your organisation does a clear form and a consistent voice.",
@@ -368,7 +368,7 @@ export const poles: Pole[] = [
     code: "07",
     name: "Training & Capacity Building",
     label: { fr: "Formation", en: "Training" },
-    hue: "#DFE6ED",
+    hue: "#FC5E02",
     lead: {
       fr: "Transmettre les méthodes et les outils pour que vos équipes travaillent seules ensuite.",
       en: "Passing on methods and tools so your teams can carry on by themselves.",

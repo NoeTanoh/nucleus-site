@@ -1,9 +1,11 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDict, isLocale } from "@/lib/i18n";
 import { poles } from "@/content/poles";
+import { href, ui } from "@/content/site";
 import { Hero } from "@/components/Hero";
 import { PoleIndex } from "@/components/PoleIndex";
-import { ContactBlock } from "@/components/ContactBlock";
+import { ApproachSteps, CtaBand, IntroSection, SectorsBand, WorkTeaser } from "@/components/Sections";
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -14,45 +16,41 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
   return (
     <>
+      {/* 1. Intro + 2. Hero */}
       <Hero lang={lang} t={t.hero} nodes={nodes} />
 
-      <section id="collectif" className="section about" aria-labelledby="about-title">
-        <div className="wrap grid">
-          <h2 id="about-title" className="section-title">
-            {t.about.title}
-          </h2>
-          <div className="body">
-            {t.about.body.map((p) => (
-              <p key={p}>{p}</p>
-            ))}
-            <p className="markets">{t.about.markets}</p>
-          </div>
-        </div>
-      </section>
+      {/* 3. Introduction */}
+      <IntroSection lang={lang} />
 
-      <section id="poles" className="section poles" aria-labelledby="poles-title">
+      {/* 4. Expertise */}
+      <section id="poles" className="section" aria-labelledby="poles-title">
         <div className="wrap">
-          <h2 id="poles-title" className="section-title">
-            {t.polesSection.title}
-          </h2>
+          <div className="grid-12 poles-head">
+            <h2 id="poles-title" className="heading">
+              {t.polesSection.title}
+            </h2>
+            <p className="lede">{t.polesSection.lead}</p>
+          </div>
           <PoleIndex lang={lang} items={poles} />
+          <p className="section-more">
+            <Link className="link" href={href(lang, "expertise")}>
+              {ui.discover[lang]}
+            </Link>
+          </p>
         </div>
       </section>
 
-      <section id="publics" className="section audiences" aria-labelledby="aud-title">
-        <div className="wrap grid">
-          <h2 id="aud-title" className="section-title">
-            {t.audiences.title}
-          </h2>
-          <ul className="audience-list">
-            {t.audiences.list.map((a) => (
-              <li key={a}>{a}</li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {/* 5. Approach */}
+      <ApproachSteps lang={lang} />
 
-      <ContactBlock t={t.contact} />
+      {/* 6. Work (real projects only) */}
+      <WorkTeaser lang={lang} />
+
+      {/* 7. Sectors */}
+      <SectorsBand lang={lang} />
+
+      {/* 8. Call to action; the footer follows from the layout */}
+      <CtaBand lang={lang} />
     </>
   );
 }
