@@ -9,7 +9,7 @@ export type Pole = {
   code: string; // official pôle number from the brief (01–07)
   name: string; // official English pôle name, used in both languages
   label: L; // short local name
-  hue: string; // accent used for this pôle's node in the 3D nucleus
+  hue: string; // node colour in the 3D nucleus (gold, ivory or light steel)
   lead: L;
   services: Service[];
   outcomes: L[];
@@ -21,7 +21,7 @@ export const poles: Pole[] = [
     code: "01",
     name: "Research & Data Collection",
     label: { fr: "Recherche & collecte", en: "Research & collection" },
-    hue: "#FC5E02",
+    hue: "#C6A56B",
     lead: {
       fr: "Concevoir les études, aller sur le terrain et ramener des données fiables, prêtes à être analysées.",
       en: "Designing studies, going into the field and bringing back reliable data that is ready for analysis.",
@@ -80,7 +80,7 @@ export const poles: Pole[] = [
     code: "02",
     name: "Statistics & Data Analytics",
     label: { fr: "Statistique & analyse", en: "Statistics & analytics" },
-    hue: "#FD8A2A",
+    hue: "#E8E6E1",
     lead: {
       fr: "Transformer des données brutes en résultats chiffrés, testés et lisibles par ceux qui décident.",
       en: "Turning raw data into tested, quantified findings that decision-makers can read.",
@@ -139,7 +139,7 @@ export const poles: Pole[] = [
     code: "03",
     name: "Business Intelligence & Reporting",
     label: { fr: "BI & reporting", en: "BI & reporting" },
-    hue: "#3D8FD6",
+    hue: "#8AA3AE",
     lead: {
       fr: "Mettre les indicateurs à jour automatiquement et les rendre consultables en un coup d'œil.",
       en: "Keeping indicators up to date automatically and readable at a glance.",
@@ -205,7 +205,7 @@ export const poles: Pole[] = [
     code: "04",
     name: "Artificial Intelligence & Automation",
     label: { fr: "IA & automatisation", en: "AI & automation" },
-    hue: "#FDB022",
+    hue: "#C6A56B",
     lead: {
       fr: "Utiliser l'intelligence artificielle là où elle fait gagner du temps ou de la précision, et nulle part ailleurs.",
       en: "Using artificial intelligence where it saves time or adds precision, and nowhere else.",
@@ -250,7 +250,7 @@ export const poles: Pole[] = [
     code: "05",
     name: "Technology & Software Development",
     label: { fr: "Technologie & logiciel", en: "Technology & software" },
-    hue: "#6FB1EA",
+    hue: "#E8E6E1",
     lead: {
       fr: "Construire et maintenir les sites, applications et plateformes dont vos équipes ont besoin.",
       en: "Building and maintaining the websites, applications and platforms your teams need.",
@@ -302,7 +302,7 @@ export const poles: Pole[] = [
     code: "06",
     name: "Communication & Creative Studio",
     label: { fr: "Communication & studio", en: "Communication & studio" },
-    hue: "#FEEDE2",
+    hue: "#8AA3AE",
     lead: {
       fr: "Donner une forme claire et une voix cohérente à ce que votre organisation fait.",
       en: "Giving what your organisation does a clear form and a consistent voice.",
@@ -368,7 +368,7 @@ export const poles: Pole[] = [
     code: "07",
     name: "Training & Capacity Building",
     label: { fr: "Formation", en: "Training" },
-    hue: "#DFE6ED",
+    hue: "#C6A56B",
     lead: {
       fr: "Transmettre les méthodes et les outils pour que vos équipes travaillent seules ensuite.",
       en: "Passing on methods and tools so your teams can carry on by themselves.",

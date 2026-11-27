@@ -16,35 +16,35 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     <>
       <Hero lang={lang} t={t.hero} nodes={nodes} />
 
-      <section id="collectif" className="section about" aria-labelledby="about-title">
-        <div className="wrap grid">
-          <h2 id="about-title" className="section-title">
+      <section id="collectif" className="section manifesto" aria-labelledby="about-title">
+        <div className="wrap grid-12">
+          <h2 id="about-title" className="sr-only">
             {t.about.title}
           </h2>
-          <div className="body">
-            {t.about.body.map((p) => (
-              <p key={p}>{p}</p>
-            ))}
-            <p className="markets">{t.about.markets}</p>
-          </div>
+          <p className="display statement">{t.about.body[0]}</p>
+          <p className="col-a">{t.about.body[1]}</p>
+          <p className="col-b">{t.about.markets}</p>
         </div>
       </section>
 
-      <section id="poles" className="section poles" aria-labelledby="poles-title">
+      <section id="poles" className="section" aria-labelledby="poles-title">
         <div className="wrap">
-          <h2 id="poles-title" className="section-title">
-            {t.polesSection.title}
-          </h2>
+          <div className="grid-12 poles-head">
+            <h2 id="poles-title" className="heading">
+              {t.polesSection.title}
+            </h2>
+            <p className="lede">{t.polesSection.lead}</p>
+          </div>
           <PoleIndex lang={lang} items={poles} />
         </div>
       </section>
 
       <section id="publics" className="section audiences" aria-labelledby="aud-title">
-        <div className="wrap grid">
-          <h2 id="aud-title" className="section-title">
+        <div className="wrap grid-12">
+          <h2 id="aud-title" className="heading">
             {t.audiences.title}
           </h2>
-          <ul className="audience-list">
+          <ul className="audience-flow">
             {t.audiences.list.map((a) => (
               <li key={a}>{a}</li>
             ))}

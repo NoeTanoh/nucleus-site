@@ -1,7 +1,8 @@
-import type { Dict } from "@/lib/i18n";
+import Link from "next/link";
+import type { Dict, Locale } from "@/lib/i18n";
 import { Symbol } from "./Symbol";
 
-export function SiteFooter({ t }: { t: Dict }) {
+export function SiteFooter({ lang, t }: { lang: Locale; t: Dict }) {
   return (
     <footer className="site-footer">
       <div className="wrap">
@@ -9,7 +10,10 @@ export function SiteFooter({ t }: { t: Dict }) {
           <Symbol />
           NUCLÉUS
         </span>
-        <span>Intelligence. Technology. Creativity.</span>
+        <span className="signature">Intelligence. Technology. Creativity.</span>
+        <Link className="link" href={`/${lang}/design-system`}>
+          {t.nav.system}
+        </Link>
         <span>
           © {new Date().getFullYear()} NUCLÉUS. {t.footer.rights}
         </span>

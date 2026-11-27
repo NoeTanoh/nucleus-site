@@ -95,7 +95,7 @@ export function ContactForm({
     return (
       <div className="contact-form contact-sent" role="status">
         <p>{t.sent}</p>
-        <button type="button" className="button button-ink" onClick={() => setState("idle")}>
+        <button type="button" className="btn" onClick={() => setState("idle")}>
           {t.another}
         </button>
       </div>
@@ -157,7 +157,7 @@ export function ContactForm({
         <input id={`${id}-website`} name="website" tabIndex={-1} autoComplete="off" />
       </div>
       <div className="form-foot">
-        <button type="submit" className="button button-ink" disabled={state === "sending"}>
+        <button type="submit" className="btn" disabled={state === "sending"}>
           {state === "sending" ? t.sending : t.submit}
         </button>
         <p className="form-status" role="status" aria-live="polite">

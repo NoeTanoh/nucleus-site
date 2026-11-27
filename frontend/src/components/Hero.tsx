@@ -65,28 +65,23 @@ export function Hero({ lang, t, nodes }: { lang: Locale; t: Dict["hero"]; nodes:
         )}
       </div>
       <div className="wrap hero-content">
-        <h1 id="hero-title" className="hero-title">
+        <h1 id="hero-title" className="display hero-title">
           <span className="sr-only">NUCLÉUS — </span>
           {words.map((w) => (
             <span className="line" key={w}>
-              <span>
-                {w.replace(".", "")}
-                <span className="dot">.</span>
-              </span>
+              <span>{w}</span>
             </span>
           ))}
         </h1>
         <div className="hero-foot">
-          <p className="hero-lead">{t.lead}</p>
-          <div style={{ display: "grid", gap: "0.9rem", justifyItems: "start" }}>
-            <Link className="button" href={`/${lang}#poles`}>
-              {t.explore}
-              <svg viewBox="0 0 20 20" aria-hidden fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M10 3v14M4 11l6 6 6-6" />
-              </svg>
-            </Link>
-            {webgl && <span className="hero-hint">{t.hint}</span>}
-          </div>
+          <p className="lede">{t.lead}</p>
+          {webgl ? <span className="hero-hint">{t.hint}</span> : <span />}
+          <Link className="btn" href={`/${lang}#poles`}>
+            {t.explore}
+            <svg viewBox="0 0 20 20" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M10 3v14M4 11l6 6 6-6" />
+            </svg>
+          </Link>
         </div>
       </div>
     </section>

@@ -45,38 +45,44 @@ float snoise(vec3 v){
 }
 `;
 
+// Obsidian crystal: faceted volcanic glass. Flat facets come from screen-space derivatives,
+// a steel-blue rim from the fresnel term and champagne-gold glints from one key light.
 export const coreVertex = /* glsl */ `
 uniform float uTime;
-uniform float uAmp;
-varying vec3 vNormal;
 varying vec3 vView;
-varying float vNoise;
-${noise}
+varying vec3 vWorld;
 void main(){
-  float n = snoise(normal * 1.2 + vec3(uTime * 0.15));
-  float n2 = snoise(normal * 2.6 - vec3(uTime * 0.2)) * 0.25;
-  float d = (n + n2) * uAmp;
-  vNoise = d;
-  vec3 pos = position + normal * d;
-  vec4 mv = modelViewMatrix * vec4(pos, 1.0);
-  vView = -mv.xyz;
-  vNormal = normalize(normalMatrix * normal);
+  vec4 mv = modelViewMatrix * vec4(position, 1.0);
+  vView = mv.xyz;
+  vWorld = position;
   gl_Position = projectionMatrix * mv;
 }
 `;
 
 export const coreFragment = /* glsl */ `
-uniform vec3 uNavy;
-uniform vec3 uOrange;
-uniform vec3 uAmber;
-varying vec3 vNormal;
+uniform float uTime;
+uniform vec3 uObsidian;
+uniform vec3 uSteel;
+uniform vec3 uGold;
+uniform vec3 uIvory;
 varying vec3 vView;
-varying float vNoise;
+varying vec3 vWorld;
+${noise}
 void main(){
-  float f = pow(1.0 - max(dot(normalize(vNormal), normalize(vView)), 0.0), 2.2);
-  vec3 col = mix(uOrange, uAmber, smoothstep(0.05, 0.3, vNoise));
-  col = mix(col, uNavy * 1.6, f * 0.85);
-  col += uAmber * pow(f, 6.0) * 0.6;
+  vec3 n = normalize(cross(dFdx(vView), dFdy(vView)));
+  vec3 v = normalize(-vView);
+  float ndv = max(dot(n, v), 0.0);
+  float fres = pow(1.0 - ndv, 2.6);
+  vec3 key = normalize(vec3(-0.45, 0.75, 0.55));
+  vec3 fill = normalize(vec3(0.7, -0.3, 0.4));
+  float spec = pow(max(dot(reflect(-key, n), v), 0.0), 60.0);
+  float spec2 = pow(max(dot(reflect(-fill, n), v), 0.0), 24.0);
+  // faint mineral banding inside the glass
+  float band = snoise(vWorld * 1.3 + vec3(0.0, uTime * 0.03, 0.0));
+  vec3 col = uObsidian * (1.15 + 0.35 * band);
+  col += uSteel * fres * 0.95;
+  col += uGold * spec * 1.25;
+  col += uIvory * spec2 * 0.12;
   gl_FragColor = vec4(col, 1.0);
   #include <colorspace_fragment>
 }
@@ -123,7 +129,7 @@ varying float vAlpha;
 void main(){
   float d = length(gl_PointCoord - 0.5);
   if (d > 0.5) discard;
-  gl_FragColor = vec4(uColor, smoothstep(0.5, 0.1, d) * vAlpha * 0.85);
+  gl_FragColor = vec4(uColor, smoothstep(0.5, 0.1, d) * vAlpha * 0.5);
   #include <colorspace_fragment>
 }
 `;

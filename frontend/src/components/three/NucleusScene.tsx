@@ -21,10 +21,10 @@ type Props = {
   onSelect: (slug: string) => void;
 };
 
-const NAVY = new THREE.Color("#133360");
-const ORANGE = new THREE.Color("#FC5E02");
-const AMBER = new THREE.Color("#FDB022");
-const MIST = new THREE.Color("#DFE6ED");
+const OBSIDIAN = new THREE.Color("#101114");
+const IVORY = new THREE.Color("#E8E6E1");
+const GOLD = new THREE.Color("#C6A56B");
+const STEEL = new THREE.Color("#526C78");
 
 const easeOutExpo = (t: number) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t));
 const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
@@ -44,23 +44,26 @@ function Core({ reduced }: { reduced: boolean }) {
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uAmp: { value: 0.1 },
-      uNavy: { value: NAVY },
-      uOrange: { value: ORANGE },
-      uAmber: { value: AMBER },
+      uObsidian: { value: OBSIDIAN },
+      uSteel: { value: STEEL },
+      uGold: { value: GOLD },
+      uIvory: { value: IVORY },
     }),
     [],
   );
   useFrame(({ clock }, dt) => {
     const t = clock.elapsedTime;
-    if (mat.current) mat.current.uniforms.uTime.value = reduced ? 4 : t;
-    const s = reduced ? 1 : easeOutExpo(clamp01(t / 1.6));
+    if (mat.current) mat.current.uniforms.uTime.value = reduced ? 0 : t;
+    const s = reduced ? 1 : easeOutExpo(clamp01(t / 1.8));
     mesh.current?.scale.setScalar(Math.max(s, 0.001));
-    if (mesh.current && !reduced) mesh.current.rotation.y += dt * 0.08;
+    if (mesh.current && !reduced) {
+      mesh.current.rotation.y += dt * 0.07;
+      mesh.current.rotation.x = Math.sin(t * 0.15) * 0.25;
+    }
   });
   return (
-    <mesh ref={mesh}>
-      <icosahedronGeometry args={[1.05, 48]} />
+    <mesh ref={mesh} rotation={[0.3, 0.4, 0]}>
+      <icosahedronGeometry args={[1.15, 1]} />
       <shaderMaterial ref={mat} vertexShader={coreVertex} fragmentShader={coreFragment} uniforms={uniforms} />
     </mesh>
   );
@@ -69,7 +72,7 @@ function Core({ reduced }: { reduced: boolean }) {
 /** Faint geodesic lattice around the core: the "structure" around the molten data. */
 function Lattice({ reduced }: { reduced: boolean }) {
   const ref = useRef<THREE.LineSegments>(null);
-  const geo = useMemo(() => new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.42, 1)), []);
+  const geo = useMemo(() => new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.5, 0)), []);
   useFrame(({ clock }, dt) => {
     if (!ref.current) return;
     const s = reduced ? 1 : easeOutExpo(clamp01((clock.elapsedTime - 0.2) / 1.8));
@@ -81,13 +84,13 @@ function Lattice({ reduced }: { reduced: boolean }) {
   });
   return (
     <lineSegments ref={ref} geometry={geo}>
-      <lineBasicMaterial color={MIST} transparent opacity={0.16} depthWrite={false} />
+      <lineBasicMaterial color={GOLD} transparent opacity={0.22} depthWrite={false} />
     </lineSegments>
   );
 }
 
 function Glow() {
-  const uniforms = useMemo(() => ({ uColor: { value: ORANGE }, uStrength: { value: 0.55 } }), []);
+  const uniforms = useMemo(() => ({ uColor: { value: STEEL }, uStrength: { value: 0.35 } }), []);
   return (
     <Billboard>
       <mesh renderOrder={-1}>
@@ -128,7 +131,7 @@ function DataField({ reduced, count }: { reduced: boolean; count: number }) {
       uniforms: {
         uTime: { value: 0 },
         uPixelRatio: { value: 1 },
-        uColor: { value: MIST },
+        uColor: { value: IVORY },
       },
     };
   }, [count]);
@@ -213,7 +216,7 @@ function Orbit({
     }
     if (ring.current) {
       const m = ring.current.material as THREE.LineBasicMaterial;
-      const target = isActive ? 0.95 : dimmed ? 0.08 : 0.26;
+      const target = isActive ? 0.85 : dimmed ? 0.05 : 0.16;
       m.opacity = THREE.MathUtils.damp(m.opacity, target * intro, 8, dt);
     }
   });
@@ -234,11 +237,11 @@ function Orbit({
   return (
     <group ref={group} rotation={tilt}>
       <lineLoop ref={ring} geometry={ringGeo}>
-        <lineBasicMaterial color={isActive ? color : MIST} transparent opacity={0} depthWrite={false} />
+        <lineBasicMaterial color={isActive ? GOLD : IVORY} transparent opacity={0} depthWrite={false} />
       </lineLoop>
       <mesh ref={dot}>
-        <sphereGeometry args={[0.075, 24, 24]} />
-        <meshBasicMaterial color={color} />
+        <sphereGeometry args={[0.06, 24, 24]} />
+        <meshBasicMaterial color={isActive ? GOLD : color} />
         {isActive && (
           <Html zIndexRange={[20, 0]} style={{ pointerEvents: "none" }}>
             <div className="node-label" data-flip={flip}>
@@ -261,9 +264,9 @@ function Orbit({
         {/* enlarged hit target + soft halo */}
         <sphereGeometry args={[0.16, 16, 16]} />
         <meshBasicMaterial
-          color={color}
+          color={isActive ? GOLD : color}
           transparent
-          opacity={isActive ? 0.35 : 0.12}
+          opacity={isActive ? 0.14 : 0.06}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
         />

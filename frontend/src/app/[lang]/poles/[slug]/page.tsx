@@ -34,29 +34,34 @@ export default async function PolePage({ params }: PageProps<"/[lang]/poles/[slu
   return (
     <>
       <section className="pole-hero" style={{ "--hue": pole.hue } as React.CSSProperties}>
+        <span className="bignum" aria-hidden>
+          {pole.code}
+        </span>
         <div className="wrap">
-          <Link className="crumb" href={`/${lang}#poles`}>
-            ← {t.pole.back}
+          <Link className="crumb link" href={`/${lang}#poles`}>
+            {t.pole.back}
           </Link>
-          <div className="grid">
-            <div>
-              <span className="code">
-                {lang === "fr" ? "Pôle" : "Practice"} {pole.code}
+          <div className="grid-12">
+            <div className="title-col">
+              <span className="meta">
+                {lang === "fr" ? "Pôle" : "Practice"} {pole.code} / 07
               </span>
-              <h1>{pole.name}</h1>
-              <p className="lead">{pole.lead[lang]}</p>
+              <h1 className="display">{pole.name}</h1>
+              <p className="lede">{pole.lead[lang]}</p>
             </div>
-            <OrbitMap active={pole.slug} />
+            <div className="orbit-col">
+              <OrbitMap active={pole.slug} />
+            </div>
           </div>
         </div>
       </section>
 
       <section className="section services" aria-labelledby="services-title">
-        <div className="wrap grid">
-          <h2 id="services-title" className="section-title">
+        <div className="wrap grid-12">
+          <h2 id="services-title" className="heading">
             {t.pole.services}
           </h2>
-          <div>
+          <div className="body">
             <dl className="service-list">
               {pole.services.map((s) => (
                 <div key={s.title.en}>
@@ -79,7 +84,9 @@ export default async function PolePage({ params }: PageProps<"/[lang]/poles/[slu
 
       <section className="section other-poles" aria-labelledby="others-title">
         <div className="wrap">
-          <h2 id="others-title">{t.pole.others}</h2>
+          <h2 id="others-title" className="heading">
+            {t.pole.others}
+          </h2>
           <PoleIndex lang={lang} items={others} />
         </div>
       </section>

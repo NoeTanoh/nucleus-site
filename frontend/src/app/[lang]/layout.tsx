@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
-import "@fontsource-variable/jost";
+import "@fontsource-variable/bodoni-moda/opsz.css";
+import "@fontsource-variable/bodoni-moda/opsz-italic.css";
+import "@fontsource-variable/manrope";
 import "../globals.css";
 import { getDict, isLocale, locales } from "@/lib/i18n";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -13,7 +15,7 @@ export function generateStaticParams() {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#0a1c3b",
+  themeColor: "#101114",
   width: "device-width",
   initialScale: 1,
 };
@@ -42,7 +44,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
         </a>
         <SiteHeader lang={lang} t={t} />
         <main id="main">{children}</main>
-        <SiteFooter t={t} />
+        <SiteFooter lang={lang} t={t} />
       </body>
     </html>
   );
