@@ -1,8 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
-import "@fontsource-variable/bodoni-moda/opsz.css";
-import "@fontsource-variable/bodoni-moda/opsz-italic.css";
-import "@fontsource-variable/manrope";
 import "../globals.css";
 import { getDict, isLocale, locales } from "@/lib/i18n";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -16,7 +13,7 @@ export function generateStaticParams() {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#101114",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };

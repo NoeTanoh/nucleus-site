@@ -27,10 +27,11 @@ type Props = {
   onError?: () => void;
 };
 
-const OBSIDIAN = new THREE.Color("#101114");
-const IVORY = new THREE.Color("#E8E6E1");
-const GOLD = new THREE.Color("#C6A56B");
-const STEEL = new THREE.Color("#526C78");
+// NUCLEUS Prime brand palette (charter p.08)
+const NAVY = new THREE.Color("#133360");
+const WHITE = new THREE.Color("#FFFFFF");
+const ORANGE = new THREE.Color("#FC5E02");
+const SKY = new THREE.Color("#3D8FD6");
 
 const easeOutExpo = (t: number) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t));
 const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
@@ -50,10 +51,10 @@ function Core({ reduced }: { reduced: boolean }) {
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uObsidian: { value: OBSIDIAN },
-      uSteel: { value: STEEL },
-      uGold: { value: GOLD },
-      uIvory: { value: IVORY },
+      uObsidian: { value: NAVY },
+      uSteel: { value: SKY },
+      uGold: { value: ORANGE },
+      uIvory: { value: WHITE },
     }),
     [],
   );
@@ -90,13 +91,13 @@ function Lattice({ reduced }: { reduced: boolean }) {
   });
   return (
     <lineSegments ref={ref} geometry={geo}>
-      <lineBasicMaterial color={GOLD} transparent opacity={0.22} depthWrite={false} />
+      <lineBasicMaterial color={ORANGE} transparent opacity={0.45} depthWrite={false} />
     </lineSegments>
   );
 }
 
 function Glow() {
-  const uniforms = useMemo(() => ({ uColor: { value: STEEL }, uStrength: { value: 0.35 } }), []);
+  const uniforms = useMemo(() => ({ uColor: { value: SKY }, uStrength: { value: 0.22 } }), []);
   return (
     <Billboard>
       <mesh renderOrder={-1}>
@@ -107,7 +108,7 @@ function Glow() {
           uniforms={uniforms}
           transparent
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          blending={THREE.NormalBlending}
         />
       </mesh>
     </Billboard>
@@ -137,7 +138,7 @@ function DataField({ reduced, count }: { reduced: boolean; count: number }) {
       uniforms: {
         uTime: { value: 0 },
         uPixelRatio: { value: 1 },
-        uColor: { value: IVORY },
+        uColor: { value: NAVY },
       },
     };
   }, [count]);
@@ -157,7 +158,7 @@ function DataField({ reduced, count }: { reduced: boolean; count: number }) {
         uniforms={uniforms}
         transparent
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={THREE.NormalBlending}
       />
     </points>
   );
@@ -243,11 +244,11 @@ function Orbit({
   return (
     <group ref={group} rotation={tilt}>
       <lineLoop ref={ring} geometry={ringGeo}>
-        <lineBasicMaterial color={isActive ? GOLD : IVORY} transparent opacity={0} depthWrite={false} />
+        <lineBasicMaterial color={isActive ? ORANGE : NAVY} transparent opacity={0} depthWrite={false} />
       </lineLoop>
       <mesh ref={dot}>
         <sphereGeometry args={[0.06, 24, 24]} />
-        <meshBasicMaterial color={isActive ? GOLD : color} />
+        <meshBasicMaterial color={isActive ? ORANGE : color} />
         {isActive && (
           <Html zIndexRange={[20, 0]} style={{ pointerEvents: "none" }}>
             <div className="node-label" data-flip={flip}>
@@ -270,11 +271,11 @@ function Orbit({
         {/* enlarged hit target + soft halo */}
         <sphereGeometry args={[0.16, 16, 16]} />
         <meshBasicMaterial
-          color={isActive ? GOLD : color}
+          color={isActive ? ORANGE : color}
           transparent
-          opacity={isActive ? 0.14 : 0.06}
+          opacity={isActive ? 0.18 : 0.08}
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          blending={THREE.NormalBlending}
         />
       </mesh>
     </group>
@@ -343,7 +344,7 @@ function Convergence({ reduced, tier }: { reduced: boolean; tier: Tier }) {
         {tilts.map((r, i) => (
           <mesh key={i} rotation={r}>
             <torusGeometry args={[1.78 + i * 0.07, 0.011, 12, 220]} />
-            <meshStandardMaterial color={GOLD} metalness={1} roughness={0.28} envMapIntensity={1.4} />
+            <meshStandardMaterial color={ORANGE} emissive={ORANGE} emissiveIntensity={0.35} metalness={0.35} roughness={0.3} envMapIntensity={1.2} />
           </mesh>
         ))}
       </group>
@@ -356,8 +357,8 @@ function Convergence({ reduced, tier }: { reduced: boolean; tier: Tier }) {
             roughness={0.12}
             ior={1.4}
             metalness={0}
-            color={IVORY}
-            attenuationColor={STEEL}
+            color={WHITE}
+            attenuationColor={SKY}
             attenuationDistance={3}
             transparent
             opacity={0.6}
@@ -375,12 +376,12 @@ function Studio({ tier }: { tier: Tier }) {
   return (
     <>
       <ambientLight intensity={0.15} />
-      <directionalLight position={[-4, 5, 4]} intensity={1.4} color={GOLD} />
-      <directionalLight position={[5, -2, -3]} intensity={0.8} color={STEEL} />
+      <directionalLight position={[-4, 5, 4]} intensity={1.4} color={ORANGE} />
+      <directionalLight position={[5, -2, -3]} intensity={0.8} color={SKY} />
       <Environment resolution={tier === "high" ? 256 : 64} frames={1}>
-        <Lightformer form="rect" intensity={2.2} color="#E8E6E1" position={[0, 4, -6]} scale={[10, 2, 1]} />
-        <Lightformer form="rect" intensity={1.6} color="#C6A56B" position={[-6, 0, 2]} rotation-y={Math.PI / 2} scale={[6, 1, 1]} />
-        <Lightformer form="ring" intensity={1.2} color="#526C78" position={[5, -2, 3]} scale={3} />
+        <Lightformer form="rect" intensity={2.2} color="#FFFFFF" position={[0, 4, -6]} scale={[10, 2, 1]} />
+        <Lightformer form="rect" intensity={1.6} color="#FC5E02" position={[-6, 0, 2]} rotation-y={Math.PI / 2} scale={[6, 1, 1]} />
+        <Lightformer form="ring" intensity={1.2} color="#3D8FD6" position={[5, -2, 3]} scale={3} />
       </Environment>
     </>
   );

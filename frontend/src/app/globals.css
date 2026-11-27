@@ -1,28 +1,38 @@
 /* ==========================================================================
-   NUCLÉUS — OBSIDIAN INTELLIGENCE design system. Documented in /DESIGN.md and
+   NUCLÉUS — design system from the NUCLEUS Prime brand guidelines (light). Documented in /DESIGN.md and
    rendered live at /[lang]/design-system.
    Layout concept: a dark editorial page on a 12-column grid, one crystal at the
    centre of the hero, sections that change rhythm instead of repeating.
    ========================================================================== */
 :root {
-  /* Palette (brief, Part II §4) */
-  --obsidian: #101114;
-  --ivory: #e8e6e1;
-  --gold: #c6a56b;
-  --steel: #526c78;
-  /* Derived — tints/shades of the four brand colours only */
-  --obsidian-2: #16181c; /* raised surface */
-  --obsidian-3: #1d2025; /* hover surface */
-  --ivory-2: #a9a8a3; /* secondary text on obsidian */
-  --steel-2: #8aa3ae; /* steel for text on obsidian */
-  --gold-2: #d9bf8f; /* gold hover */
-  --gold-ink: #6f5a32; /* gold for text on ivory */
-  --line: rgba(232, 230, 225, 0.14);
-  --line-strong: rgba(232, 230, 225, 0.32);
+  /* Palette: NUCLEUS Prime brand guidelines, p.08 */
+  --navy: #133360;
+  --orange: #fc5e02;
+  --amber: #fdb022;
+  --sky: #3d8fd6;
+  --mist: #dfe6ed;
+  --blush: #feede2;
+  --white: #ffffff;
+
+  /* Roles */
+  --bg: var(--white); /* page */
+  --surface: #f3f6f9; /* raised band (mist, lighter) */
+  --surface-2: var(--mist); /* hover surface */
+  --ink: var(--navy); /* text */
+  --ink-2: #4b5f7d; /* secondary text, 6.4:1 on white */
+  --accent: var(--orange); /* fills, rules, large text only */
+  --accent-2: #e05300; /* accent hover */
+  --accent-text: #c44900; /* orange for small text on white, 4.6:1 */
+  --accent-on-dark: var(--amber); /* accent on the navy band */
+  --blue: var(--sky);
+  --blue-2: #2c6fae; /* blue for text on white */
+  --line: rgba(19, 51, 96, 0.14);
+  --line-strong: rgba(19, 51, 96, 0.32);
 
   /* Type */
-  --serif: "Bodoni Moda Variable", "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
-  --sans: "Manrope Variable", "Manrope", "Helvetica Neue", Arial, system-ui, sans-serif;
+  /* One family, as requested: Times New Roman for titles and text */
+  --serif: "Times New Roman", Times, "Liberation Serif", "Nimbus Roman", serif;
+  --sans: "Times New Roman", Times, "Liberation Serif", "Nimbus Roman", serif;
   /* Modular scale 1.25 (major third) from a fluid 16–18px base; display steps widen faster */
   --t-xs: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
   --t-sm: clamp(0.88rem, 0.85rem + 0.15vw, 0.95rem);
@@ -54,7 +64,7 @@
   --radius-pill: 999px;
   --ease: cubic-bezier(0.22, 0.61, 0.2, 1);
   --dur: 0.35s;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 *,
@@ -74,8 +84,8 @@ body {
   font-family: var(--sans);
   font-size: var(--t-base);
   line-height: 1.6;
-  background: var(--obsidian);
-  color: var(--ivory);
+  background: var(--bg);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -107,12 +117,12 @@ canvas {
   max-width: 100%;
 }
 ::selection {
-  background: var(--gold);
-  color: var(--obsidian);
+  background: var(--accent);
+  color: var(--bg);
 }
 
 :focus-visible {
-  outline: 1px solid var(--gold);
+  outline: 1px solid var(--accent);
   outline-offset: 4px;
 }
 
@@ -122,8 +132,8 @@ canvas {
   top: -4rem;
   z-index: 100;
   padding: var(--s-3) var(--s-4);
-  background: var(--gold);
-  color: var(--obsidian);
+  background: var(--accent);
+  color: var(--bg);
   font-weight: 600;
 }
 .skip:focus {
@@ -179,28 +189,29 @@ canvas {
 .lede {
   font-size: var(--t-md);
   line-height: 1.5;
-  color: var(--ivory-2);
+  color: var(--ink-2);
   max-width: 34em;
 }
 .meta {
   font-size: var(--t-xs);
   letter-spacing: 0.08em;
-  color: var(--steel-2);
+  color: var(--blue-2);
   font-variant-numeric: tabular-nums;
 }
 .code {
   font-family: var(--serif);
   font-style: italic;
   font-variation-settings: "opsz" 24;
-  color: var(--gold);
+  color: var(--accent-text);
   font-variant-numeric: lining-nums tabular-nums;
 }
 
 /* ---------- Buttons & links ---------- */
 .btn {
-  --btn-bg: var(--gold);
-  --btn-fg: var(--obsidian);
-  --btn-bd: var(--gold);
+  /* Navy carries the white label at 12:1; orange takes over on hover, like the logo's two strokes */
+  --btn-bg: var(--ink);
+  --btn-fg: var(--white);
+  --btn-bd: var(--ink);
   display: inline-flex;
   align-items: center;
   gap: var(--s-3);
@@ -219,8 +230,8 @@ canvas {
     border-color var(--dur) var(--ease);
 }
 .btn:hover {
-  --btn-bg: var(--gold-2);
-  --btn-bd: var(--gold-2);
+  --btn-bg: var(--accent-text);
+  --btn-bd: var(--accent-text);
 }
 .btn:active {
   transform: translateY(1px);
@@ -228,19 +239,19 @@ canvas {
 .btn:disabled,
 .btn[aria-disabled="true"] {
   --btn-bg: transparent;
-  --btn-fg: var(--ivory-2);
+  --btn-fg: var(--ink-2);
   --btn-bd: var(--line-strong);
   cursor: not-allowed;
 }
 .btn-outline {
   --btn-bg: transparent;
-  --btn-fg: var(--ivory);
+  --btn-fg: var(--ink);
   --btn-bd: var(--line-strong);
 }
 .btn-outline:hover {
   --btn-bg: transparent;
-  --btn-fg: var(--gold);
-  --btn-bd: var(--gold);
+  --btn-fg: var(--accent-text);
+  --btn-bd: var(--accent);
 }
 .btn svg {
   width: 1em;
@@ -255,7 +266,7 @@ canvas {
     color var(--dur) var(--ease);
 }
 .link:hover {
-  color: var(--gold);
+  color: var(--accent-text);
   background-size: 0% 1px;
   background-position: 100% 100%;
 }
@@ -272,7 +283,7 @@ canvas {
     border-color var(--dur) var(--ease);
 }
 .site-header[data-solid="true"] {
-  background: color-mix(in srgb, var(--obsidian) 86%, transparent);
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
   backdrop-filter: blur(16px);
   border-bottom-color: var(--line);
 }
@@ -310,12 +321,12 @@ canvas {
 .nav a:not(.lang) {
   position: relative;
   padding-block: var(--s-2);
-  color: var(--ivory-2);
+  color: var(--ink-2);
   transition: color var(--dur) var(--ease);
 }
 .nav a:not(.lang):hover,
 .nav a[aria-current="page"] {
-  color: var(--ivory);
+  color: var(--ink);
 }
 .nav a:not(.lang)::after {
   content: "";
@@ -325,7 +336,7 @@ canvas {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--gold);
+  background: var(--accent);
   transform: translateX(-50%) scale(0);
   transition: transform var(--dur) var(--ease);
 }
@@ -348,8 +359,8 @@ canvas {
     color var(--dur) var(--ease);
 }
 .lang:hover {
-  border-color: var(--gold);
-  color: var(--gold);
+  border-color: var(--accent);
+  color: var(--accent-text);
 }
 @media (max-width: 760px) {
   .nav .nav-secondary {
@@ -365,8 +376,8 @@ canvas {
   align-items: end;
   overflow: clip;
   background:
-    radial-gradient(55% 60% at 70% 42%, rgba(82, 108, 120, 0.26) 0%, transparent 70%),
-    var(--obsidian);
+    radial-gradient(55% 60% at 70% 42%, rgba(61, 143, 214, 0.16) 0%, transparent 70%),
+    var(--bg);
 }
 .hero-canvas {
   position: absolute;
@@ -419,7 +430,7 @@ canvas {
 }
 .hero-hint {
   font-size: var(--t-xs);
-  color: var(--ivory-2);
+  color: var(--ink-2);
 }
 @media (hover: none) {
   .hero-hint {
@@ -436,12 +447,12 @@ canvas {
   gap: var(--s-3);
   align-items: baseline;
   padding: var(--s-2) var(--s-3);
-  background: color-mix(in srgb, var(--obsidian) 88%, transparent);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
   border: 1px solid var(--line);
   font-family: var(--sans);
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--ivory);
+  color: var(--ink);
 }
 .node-label[data-flip="true"] {
   transform: translate(calc(-100% - 1.2rem), -50%);
@@ -450,7 +461,7 @@ canvas {
   font-family: var(--serif);
   font-style: italic;
   font-size: 0.9rem;
-  color: var(--gold);
+  color: var(--accent-text);
 }
 
 /* ---------- Sections ---------- */
@@ -479,12 +490,12 @@ canvas {
 }
 .manifesto .col-a,
 .manifesto .col-b {
-  color: var(--ivory-2);
+  color: var(--ink-2);
   padding-top: var(--s-5);
   border-top: 1px solid var(--line);
 }
 .manifesto .col-b {
-  color: var(--steel-2);
+  color: var(--blue-2);
 }
 
 /* Pôle index */
@@ -507,7 +518,7 @@ canvas {
   border-bottom: 1px solid var(--line);
 }
 .pole-row {
-  --hue: var(--gold);
+  --hue: var(--accent);
   display: grid;
   grid-template-columns: 2.5rem minmax(0, 1fr);
   gap: var(--s-2) var(--s-4);
@@ -533,7 +544,7 @@ canvas {
 .pole-lead {
   grid-column: 2;
   font-size: var(--t-sm);
-  color: var(--ivory-2);
+  color: var(--ink-2);
   max-width: 30em;
 }
 @media (min-width: 900px) {
@@ -544,7 +555,7 @@ canvas {
 .pole-arrow {
   display: none;
   justify-self: end;
-  color: var(--gold);
+  color: var(--accent-text);
   transform: translateX(-0.5rem);
   opacity: 0;
   transition:
@@ -562,7 +573,7 @@ canvas {
 }
 .pole-row:hover .pole-name,
 .pole-row:focus-visible .pole-name {
-  color: var(--gold);
+  color: var(--accent-text);
 }
 .pole-row:hover .pole-arrow,
 .pole-row:focus-visible .pole-arrow {
@@ -572,12 +583,12 @@ canvas {
 
 /* Audiences: the one ivory inversion, set as running text */
 .audiences {
-  background: var(--ivory);
-  color: var(--obsidian);
+  background: var(--ink);
+  color: var(--bg);
 }
 .audiences ::selection {
-  background: var(--obsidian);
-  color: var(--ivory);
+  background: var(--bg);
+  color: var(--ink);
 }
 @media (min-width: 900px) {
   .audiences .heading {
@@ -598,7 +609,7 @@ canvas {
 }
 .audience-flow li:not(:last-child)::after {
   content: " / ";
-  color: var(--gold-ink);
+  color: var(--accent-on-dark);
   font-style: italic;
 }
 
@@ -645,7 +656,7 @@ canvas {
 .field legend {
   font-size: var(--t-xs);
   letter-spacing: 0.06em;
-  color: var(--ivory-2);
+  color: var(--ink-2);
   padding: 0;
 }
 .field legend {
@@ -655,7 +666,7 @@ canvas {
 .field textarea {
   width: 100%;
   font: inherit;
-  color: var(--ivory);
+  color: var(--ink);
   background: transparent;
   border: 0;
   border-bottom: 1px solid var(--line-strong);
@@ -669,23 +680,23 @@ canvas {
 }
 .field input:hover,
 .field textarea:hover {
-  border-bottom-color: var(--ivory-2);
+  border-bottom-color: var(--ink-2);
 }
 .field input:focus,
 .field textarea:focus {
   outline: none;
-  border-bottom-color: var(--gold);
+  border-bottom-color: var(--accent);
 }
 .field[data-invalid="true"] input,
 .field[data-invalid="true"] textarea {
-  border-bottom-color: var(--gold);
+  border-bottom-color: var(--accent);
 }
 .field-msg {
   font-size: var(--t-xs);
-  color: var(--ivory-2);
+  color: var(--ink-2);
 }
 .field[data-invalid="true"] .field-msg {
-  color: var(--gold);
+  color: var(--accent-text);
 }
 .chips {
   display: flex;
@@ -716,15 +727,15 @@ canvas {
     border-color var(--dur) var(--ease);
 }
 .chip:hover span {
-  border-color: var(--ivory-2);
+  border-color: var(--ink-2);
 }
 .chip input:checked + span {
-  background: var(--ivory);
-  border-color: var(--ivory);
-  color: var(--obsidian);
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
 }
 .chip input:focus-visible + span {
-  outline: 1px solid var(--gold);
+  outline: 1px solid var(--accent);
   outline-offset: 3px;
 }
 .hp {
@@ -742,14 +753,14 @@ canvas {
 }
 .form-status {
   font-size: var(--t-sm);
-  color: var(--ivory-2);
+  color: var(--ink-2);
 }
 .contact-sent {
   display: grid;
   gap: var(--s-5);
   justify-items: start;
   padding: var(--s-6);
-  border: 1px solid var(--gold);
+  border: 1px solid var(--accent);
 }
 .contact-sent p {
   font-family: var(--serif);
@@ -773,7 +784,7 @@ canvas {
   font-size: clamp(12rem, 8rem + 22vw, 30rem);
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(198, 165, 107, 0.2);
+  -webkit-text-stroke: 1px rgba(252, 94, 2, 0.22);
   pointer-events: none;
   user-select: none;
 }
@@ -782,11 +793,11 @@ canvas {
   gap: var(--s-2);
   margin-bottom: var(--s-8);
   font-size: var(--t-sm);
-  color: var(--ivory-2);
+  color: var(--ink-2);
   transition: color var(--dur) var(--ease);
 }
 .crumb:hover {
-  color: var(--gold);
+  color: var(--accent-text);
 }
 .pole-hero .meta {
   display: block;
@@ -852,19 +863,19 @@ canvas {
   line-height: 1.25;
 }
 .service-list dd {
-  color: var(--ivory-2);
+  color: var(--ink-2);
   font-size: var(--t-sm);
 }
 .outcomes {
   margin-top: var(--s-8);
   padding: var(--s-6);
-  background: var(--obsidian-2);
-  border-left: 1px solid var(--gold);
+  background: var(--surface);
+  border-left: 1px solid var(--accent);
 }
 .outcomes h3 {
   font-size: var(--t-xs);
   letter-spacing: 0.08em;
-  color: var(--gold);
+  color: var(--accent-text);
   font-weight: 600;
   margin-bottom: var(--s-4);
 }
@@ -878,7 +889,7 @@ canvas {
 }
 
 .other-poles {
-  background: var(--obsidian-2);
+  background: var(--surface);
 }
 .other-poles .heading {
   font-size: var(--t-lg);
@@ -914,7 +925,7 @@ canvas {
   display: grid;
   gap: var(--s-1);
   font-size: var(--t-xs);
-  color: var(--ivory-2);
+  color: var(--ink-2);
 }
 .swatch i {
   display: block;
@@ -925,7 +936,7 @@ canvas {
 }
 .swatch b {
   font-weight: 600;
-  color: var(--ivory);
+  color: var(--ink);
   font-size: var(--t-sm);
 }
 .ds-type > div {
@@ -956,13 +967,13 @@ canvas {
   align-items: center;
   gap: var(--s-4);
   font-size: var(--t-xs);
-  color: var(--ivory-2);
+  color: var(--ink-2);
   font-variant-numeric: tabular-nums;
 }
 .ds-spacing .bar {
   display: block;
   height: 0.6rem;
-  background: var(--steel);
+  background: var(--blue);
 }
 .ds-grid {
   height: 7rem;
@@ -971,11 +982,11 @@ canvas {
 .ds-grid > i {
   grid-column: auto;
   display: block;
-  background: rgba(82, 108, 120, 0.22);
-  border-inline: 1px solid rgba(82, 108, 120, 0.55);
+  background: rgba(61, 143, 214, 0.12);
+  border-inline: 1px solid rgba(61, 143, 214, 0.45);
 }
 .ds-note {
-  color: var(--ivory-2);
+  color: var(--ink-2);
   font-size: var(--t-sm);
   max-width: 44em;
   margin-top: var(--s-5);
@@ -1003,7 +1014,7 @@ canvas {
   padding: 0 var(--s-1) 0 var(--s-3);
   background: none;
   border: 0;
-  color: var(--ivory);
+  color: var(--ink);
   font: 500 var(--t-sm) / 1 var(--sans);
   cursor: pointer;
 }
@@ -1037,13 +1048,13 @@ canvas {
   transform: rotate(-45deg);
 }
 .menu-toggle:hover {
-  color: var(--gold);
+  color: var(--accent-text);
 }
 .menu {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: var(--obsidian);
+  background: var(--bg);
   overflow-y: auto;
 }
 .menu-inner {
@@ -1062,17 +1073,17 @@ canvas {
   font-variation-settings: "opsz" 72;
   font-size: var(--t-xl);
   line-height: 1.08;
-  color: var(--ivory-2);
+  color: var(--ink-2);
   transition: color var(--dur) var(--ease);
 }
 .menu ol a:hover,
 .menu ol a[aria-current="page"] {
-  color: var(--gold);
+  color: var(--accent-text);
 }
 .menu-sig {
   font-family: var(--serif);
   font-style: italic;
-  color: var(--steel-2);
+  color: var(--blue-2);
   padding-top: var(--s-5);
   border-top: 1px solid var(--line);
 }
@@ -1105,7 +1116,7 @@ html[data-intro-running] {
   place-items: center;
   padding: max(var(--gutter), env(safe-area-inset-top, 0px)) var(--gutter)
     max(var(--s-6), env(safe-area-inset-bottom, 0px));
-  background: var(--obsidian);
+  background: var(--bg);
   clip-path: inset(0 0 0 0);
   transition: clip-path 0.9s cubic-bezier(0.76, 0, 0.24, 1);
 }
@@ -1132,14 +1143,14 @@ html[data-intro-running] {
     intro-fill 0.8s var(--ease) forwards;
 }
 .intro-mark .s1 {
-  stroke: var(--ivory);
+  stroke: var(--ink);
   animation-delay: 0s, 1.2s;
-  --fill: var(--ivory);
+  --fill: var(--ink);
 }
 .intro-mark .s2 {
-  stroke: var(--gold);
+  stroke: var(--accent);
   animation-delay: 0.35s, 1.45s;
-  --fill: var(--gold);
+  --fill: var(--accent);
 }
 @keyframes intro-draw {
   to {
@@ -1178,7 +1189,7 @@ html[data-intro-running] {
 }
 .intro-foot .meta {
   font-variant-numeric: tabular-nums;
-  color: var(--ivory-2);
+  color: var(--ink-2);
 }
 .intro-bar {
   height: 1px;
@@ -1188,7 +1199,7 @@ html[data-intro-running] {
 .intro-bar i {
   display: block;
   height: 100%;
-  background: var(--gold);
+  background: var(--accent);
   transform-origin: left;
 }
 .intro-skip {
@@ -1196,7 +1207,7 @@ html[data-intro-running] {
   background: none;
   border: 0;
   padding: var(--s-2) 0;
-  color: var(--ivory);
+  color: var(--ink);
   cursor: pointer;
   font-family: inherit;
 }
@@ -1217,7 +1228,7 @@ html[data-intro-running] {
   position: absolute;
   right: var(--gutter);
   top: 6rem;
-  color: var(--ivory-2);
+  color: var(--ink-2);
 }
 
 /* ---------- Home §3: introduction, three offset columns ---------- */
@@ -1239,11 +1250,11 @@ html[data-intro-running] {
   border-bottom: 1px solid var(--line);
 }
 .intro-cols dt .code {
-  color: var(--gold);
+  color: var(--accent-text);
   margin-right: var(--s-2);
 }
 .intro-cols dd {
-  color: var(--ivory-2);
+  color: var(--ink-2);
   max-width: 34em;
 }
 @media (min-width: 900px) {
@@ -1266,7 +1277,7 @@ html[data-intro-running] {
 
 /* ---------- Approach: a numbered rail ---------- */
 .approach {
-  background: var(--obsidian-2);
+  background: var(--surface);
 }
 .approach-head {
   align-items: end;
@@ -1298,7 +1309,7 @@ html[data-intro-running] {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--gold);
+  background: var(--accent);
 }
 .rail-num {
   display: block;
@@ -1307,7 +1318,7 @@ html[data-intro-running] {
   font-size: var(--t-xl);
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 1px var(--gold);
+  -webkit-text-stroke: 1px var(--accent);
   margin-bottom: var(--s-4);
 }
 .rail h3 {
@@ -1318,7 +1329,7 @@ html[data-intro-running] {
   margin-bottom: var(--s-3);
 }
 .rail p {
-  color: var(--ivory-2);
+  color: var(--ink-2);
   font-size: var(--t-sm);
   max-width: 22em;
 }
@@ -1355,26 +1366,26 @@ html[data-intro-running] {
   -webkit-text-stroke: 1px var(--line-strong);
 }
 .empty .meta {
-  color: var(--gold);
+  color: var(--accent-text);
   margin-bottom: var(--s-2);
 }
 .empty-text {
   max-width: 40em;
-  color: var(--ivory-2);
+  color: var(--ink-2);
 }
 .placeholder {
-  color: var(--ivory-2);
+  color: var(--ink-2);
   font-style: italic;
   font-family: var(--serif);
 }
 .placeholder::before {
   content: "[ ";
-  color: var(--gold);
+  color: var(--accent-text);
   font-style: normal;
 }
 .placeholder::after {
   content: " ]";
-  color: var(--gold);
+  color: var(--accent-text);
   font-style: normal;
 }
 
@@ -1436,7 +1447,7 @@ html[data-intro-running] {
   row-gap: var(--s-5);
 }
 .page-head .meta .code {
-  color: var(--gold);
+  color: var(--accent-text);
   margin-right: var(--s-2);
 }
 .page-head .display {
@@ -1465,7 +1476,7 @@ html[data-intro-running] {
   border-bottom: 1px solid var(--line);
 }
 .ledger dd {
-  color: var(--ivory-2);
+  color: var(--ink-2);
   max-width: 38em;
 }
 @media (min-width: 900px) {
@@ -1481,7 +1492,7 @@ html[data-intro-running] {
   text-wrap: balance;
 }
 .quote::first-line {
-  color: var(--gold);
+  color: var(--accent-text);
 }
 
 /* Split: heading left, content right */
@@ -1515,7 +1526,7 @@ html[data-intro-running] {
   border-top: 1px solid var(--line);
 }
 .solution-list > li > p {
-  color: var(--ivory-2);
+  color: var(--ink-2);
   max-width: 34em;
 }
 .solution-num {
@@ -1524,7 +1535,7 @@ html[data-intro-running] {
   font-size: var(--t-2xl);
   line-height: 0.9;
   color: transparent;
-  -webkit-text-stroke: 1px var(--gold);
+  -webkit-text-stroke: 1px var(--accent);
 }
 .solution-poles {
   display: flex;
@@ -1540,10 +1551,10 @@ a.chip {
   transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 a.chip .code {
-  color: var(--gold);
+  color: var(--accent-text);
 }
 a.chip:hover {
-  border-color: var(--gold);
+  border-color: var(--accent);
 }
 @media (min-width: 900px) {
   .solution-list > li {
@@ -1572,7 +1583,7 @@ a.chip:hover {
   font-size: var(--t-lg);
 }
 .kinds .code {
-  color: var(--gold);
+  color: var(--accent-text);
   font-size: var(--t-xs);
   margin-right: var(--s-2);
   vertical-align: super;
@@ -1598,7 +1609,7 @@ a.chip:hover {
   border-top: 1px solid var(--line);
   padding-block: var(--s-8) var(--s-6);
   font-size: var(--t-sm);
-  color: var(--ivory-2);
+  color: var(--ink-2);
 }
 .site-footer .grid-12 {
   row-gap: var(--s-7);
@@ -1609,18 +1620,18 @@ a.chip:hover {
   align-content: start;
 }
 .site-footer .brand {
-  color: var(--ivory);
+  color: var(--ink);
 }
 .site-footer .signature {
   font-family: var(--serif);
   font-style: italic;
   font-size: var(--t-md);
-  color: var(--ivory);
+  color: var(--ink);
 }
 .foot-nav .meta,
 .foot-contact .meta {
   margin-bottom: var(--s-4);
-  color: var(--ivory);
+  color: var(--ink);
 }
 .foot-nav ul {
   columns: 2;
@@ -1630,7 +1641,7 @@ a.chip:hover {
   padding-block: var(--s-1);
 }
 .foot-nav a:hover {
-  color: var(--gold);
+  color: var(--accent-text);
 }
 .foot-legal {
   display: flex;

@@ -45,7 +45,7 @@ float snoise(vec3 v){
 }
 `;
 
-// Obsidian crystal: faceted volcanic glass. Flat facets come from screen-space derivatives,
+// Brand crystal: faceted navy-to-blue glass with orange highlights. Flat facets come from screen-space derivatives,
 // a steel-blue rim from the fresnel term and champagne-gold glints from one key light.
 export const coreVertex = /* glsl */ `
 uniform float uTime;
@@ -79,8 +79,9 @@ void main(){
   float spec2 = pow(max(dot(reflect(-fill, n), v), 0.0), 24.0);
   // faint mineral banding inside the glass
   float band = snoise(vWorld * 1.3 + vec3(0.0, uTime * 0.03, 0.0));
-  vec3 col = uObsidian * (1.15 + 0.35 * band);
-  col += uSteel * fres * 0.95;
+  // navy at the base, brand blue towards the top, like the logo gradient
+  vec3 col = mix(uObsidian, uSteel, smoothstep(-1.2, 1.4, vWorld.y) * 0.6) * (1.0 + 0.25 * band);
+  col += mix(uSteel, uIvory, 0.35) * fres * 0.9;
   col += uGold * spec * 1.25;
   col += uIvory * spec2 * 0.12;
   gl_FragColor = vec4(col, 1.0);
@@ -129,7 +130,7 @@ varying float vAlpha;
 void main(){
   float d = length(gl_PointCoord - 0.5);
   if (d > 0.5) discard;
-  gl_FragColor = vec4(uColor, smoothstep(0.5, 0.1, d) * vAlpha * 0.5);
+  gl_FragColor = vec4(uColor, smoothstep(0.5, 0.1, d) * vAlpha * 0.45);
   #include <colorspace_fragment>
 }
 `;

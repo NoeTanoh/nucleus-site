@@ -6,25 +6,25 @@ import { Symbol } from "@/components/Symbol";
 export const metadata: Metadata = { title: "Design system", robots: { index: false } };
 
 const colors = [
-  { name: "Obsidian", token: "--obsidian", hex: "#101114", role: { fr: "Fond principal", en: "Main background" } },
-  { name: "Ivory", token: "--ivory", hex: "#E8E6E1", role: { fr: "Texte, section inversée", en: "Text, inverted section" } },
-  { name: "Champagne gold", token: "--gold", hex: "#C6A56B", role: { fr: "Action, sélection, accent rare", en: "Action, selection, rare accent" } },
-  { name: "Steel blue", token: "--steel", hex: "#526C78", role: { fr: "Profondeur, reflets 3D, données", en: "Depth, 3D rim, data" } },
-  { name: "Obsidian 2", token: "--obsidian-2", hex: "#16181C", role: { fr: "Surface surélevée", en: "Raised surface" } },
-  { name: "Ivory 2", token: "--ivory-2", hex: "#A9A8A3", role: { fr: "Texte secondaire", en: "Secondary text" } },
-  { name: "Steel 2", token: "--steel-2", hex: "#8AA3AE", role: { fr: "Steel lisible sur obsidienne", en: "Readable steel on obsidian" } },
-  { name: "Gold ink", token: "--gold-ink", hex: "#6F5A32", role: { fr: "Or lisible sur ivoire", en: "Readable gold on ivory" } },
+  { name: "Bleu marine", token: "--navy", hex: "#133360", role: { fr: "Texte, boutons, bande inversée", en: "Text, buttons, inverted band" } },
+  { name: "Orange", token: "--orange", hex: "#FC5E02", role: { fr: "Accent, filets, grands titres", en: "Accent, rules, large headings" } },
+  { name: "Ambre", token: "--amber", hex: "#FDB022", role: { fr: "Accent sur fond marine", en: "Accent on navy" } },
+  { name: "Bleu ciel", token: "--sky", hex: "#3D8FD6", role: { fr: "Données, reflets 3D", en: "Data, 3D highlights" } },
+  { name: "Brume", token: "--mist", hex: "#DFE6ED", role: { fr: "Surfaces, survol", en: "Surfaces, hover" } },
+  { name: "Pêche", token: "--blush", hex: "#FEEDE2", role: { fr: "Fond chaud secondaire", en: "Warm secondary background" } },
+  { name: "Blanc", token: "--white", hex: "#FFFFFF", role: { fr: "Fond principal", en: "Main background" } },
+  { name: "Orange texte", token: "--accent-text", hex: "#C44900", role: { fr: "Orange lisible en petit sur blanc", en: "Readable small orange on white" } },
 ];
 
 const type = [
-  { token: "--t-3xl", sample: "Intelligence.", cls: "display", note: "Bodoni Moda 400, opsz 96" },
-  { token: "--t-2xl", sample: "Research & Data Collection", cls: "display", note: "Bodoni Moda 400, opsz 96" },
-  { token: "--t-xl", sample: "Les sept pôles", cls: "heading", note: "Bodoni Moda 400, opsz 72" },
-  { token: "--t-lg", sample: "Business Intelligence & Reporting", cls: "pole-name", note: "Bodoni Moda 400, opsz 60" },
-  { token: "--t-md", sample: "Concevoir les études et ramener des données fiables.", cls: "lede", note: "Manrope 400" },
-  { token: "--t-base", sample: "Texte courant, 16 à 18 px, interligne 1,6.", cls: "", note: "Manrope 400" },
-  { token: "--t-sm", sample: "Navigation, boutons, légendes.", cls: "", note: "Manrope 500–600" },
-  { token: "--t-xs", sample: "Pôle 03 / 07", cls: "meta", note: "Manrope 400, interlettrage 0,08em" },
+  { token: "--t-3xl", sample: "Intelligence.", cls: "display", note: "Times New Roman 400" },
+  { token: "--t-2xl", sample: "Research & Data Collection", cls: "display", note: "Times New Roman 400" },
+  { token: "--t-xl", sample: "Les sept pôles", cls: "heading", note: "Times New Roman 400" },
+  { token: "--t-lg", sample: "Business Intelligence & Reporting", cls: "pole-name", note: "Times New Roman 400" },
+  { token: "--t-md", sample: "Concevoir les études et ramener des données fiables.", cls: "lede", note: "Times New Roman 400" },
+  { token: "--t-base", sample: "Texte courant, 16 à 18 px, interligne 1,6.", cls: "", note: "Times New Roman 400" },
+  { token: "--t-sm", sample: "Navigation, boutons, légendes.", cls: "", note: "Times New Roman 600" },
+  { token: "--t-xs", sample: "Pôle 03 / 07", cls: "meta", note: "Times New Roman, interlettrage 0,08em" },
 ];
 
 const spacing = [
@@ -48,7 +48,7 @@ export default async function DesignSystem({ params }: PageProps<"/[lang]/design
   return (
     <>
       <section className="wrap ds-intro">
-        <span className="meta">OBSIDIAN INTELLIGENCE</span>
+        <span className="meta">NUCLEUS Prime</span>
         <h1 className="display" style={{ fontSize: "var(--t-2xl)", marginTop: "var(--s-4)" }}>
           {fr ? "Système de design" : "Design system"}
         </h1>
@@ -75,8 +75,8 @@ export default async function DesignSystem({ params }: PageProps<"/[lang]/design
           </div>
           <p className="ds-note">
             {fr
-              ? "Équilibre visé : environ 80 % d'obsidienne, 15 % d'ivoire, 5 % d'or et de steel. L'or marque ce qui est actif ou sélectionné ; il n'est jamais un fond de section."
-              : "Target balance: about 80% obsidian, 15% ivory, 5% gold and steel. Gold marks what is active or selected; it is never a section background."}
+              ? "Équilibre visé : environ 80 % de blanc et de brume, 15 % de bleu marine, 5 % d'orange. L'orange vient de la charte NUCLEUS Prime ; il marque ce qui est actif, et passe en orange foncé pour le petit texte."
+              : "Target balance: about 80% white and mist, 15% navy, 5% orange. Orange comes from the NUCLEUS Prime guidelines; it marks what is active, and turns dark orange for small text."}
           </p>
         </section>
 
@@ -98,8 +98,8 @@ export default async function DesignSystem({ params }: PageProps<"/[lang]/design
           </div>
           <p className="ds-note">
             {fr
-              ? "Échelle modulaire 1,25 (tierce majeure). Les titres sont en Bodoni Moda, une didone à axe optique qui garde des déliés fins aux grandes tailles ; le texte est en Manrope. Les codes de pôle sont en Bodoni italique."
-              : "Modular scale 1.25 (major third). Headings use Bodoni Moda, a didone with an optical-size axis that keeps fine hairlines at large sizes; text uses Manrope. Pôle codes are set in Bodoni italic."}
+              ? "Échelle modulaire 1,25 (tierce majeure). Une seule famille, Times New Roman, pour les titres et le texte ; la hiérarchie vient de la taille, de la graisse et de l'italique. Les codes de pôle sont en italique orange."
+              : "Modular scale 1.25 (major third). One family, Times New Roman, for headings and text; hierarchy comes from size, weight and italics. Pôle codes are set in orange italics."}
           </p>
         </section>
 
@@ -148,8 +148,8 @@ export default async function DesignSystem({ params }: PageProps<"/[lang]/design
           </div>
           <p className="ds-note">
             {fr
-              ? "Primaire : fond or, texte obsidienne ; survol : or clair. Secondaire : contour ivoire, or au survol. Désactivé : contour seul. Focus clavier : filet or de 1 px décalé de 4 px, sur tous les éléments."
-              : "Primary: gold fill, obsidian text; hover: light gold. Secondary: ivory outline, gold on hover. Disabled: outline only. Keyboard focus: 1px gold outline offset by 4px, on every element."}
+              ? "Primaire : fond bleu marine, texte blanc ; survol : orange foncé. Secondaire : contour marine, orange au survol. Désactivé : contour seul. Focus clavier : filet orange de 1 px décalé de 4 px, sur tous les éléments."
+              : "Primary: navy fill, white text; hover: dark orange. Secondary: navy outline, orange on hover. Disabled: outline only. Keyboard focus: 1px orange outline offset by 4px, on every element."}
           </p>
         </section>
 
@@ -172,8 +172,8 @@ export default async function DesignSystem({ params }: PageProps<"/[lang]/design
           </div>
           <p className="ds-note">
             {fr
-              ? "Liens en ivoire secondaire ; la page active et le survol passent en ivoire avec un point or. L'en-tête devient opaque avec un filet dès que la page défile."
-              : "Links in secondary ivory; the active page and hover turn ivory with a gold dot. The header turns opaque with a hairline once the page scrolls."}
+              ? "Liens en bleu secondaire ; la page active et le survol passent en marine avec un point orange. L'en-tête devient opaque avec un filet dès que la page défile."
+              : "Links in secondary blue; the active page and hover turn navy with an orange dot. The header turns opaque with a hairline once the page scrolls."}
           </p>
         </section>
 
@@ -211,8 +211,8 @@ export default async function DesignSystem({ params }: PageProps<"/[lang]/design
           <h2 className="heading">{fr ? "Index des pôles" : "Practice index"}</h2>
           <p className="ds-note" style={{ marginTop: 0 }}>
             {fr
-              ? "Les pôles ne sont jamais présentés en grille de cartes : c'est un index typographique. Code officiel en Bodoni italique or, nom en Bodoni, résumé en Manrope. Au survol, le nom passe en or et une flèche apparaît."
-              : "Practices are never shown as a card grid: they form a typographic index. Official code in gold Bodoni italic, name in Bodoni, summary in Manrope. On hover the name turns gold and an arrow appears."}
+              ? "Les pôles ne sont jamais présentés en grille de cartes : c'est un index typographique. Code officiel en italique orange, nom en grand, résumé en texte courant. Au survol, le nom passe en orange et une flèche apparaît."
+              : "Practices are never shown as a card grid: they form a typographic index. Official code in orange italics, name set large, summary in body text. On hover the name turns orange and an arrow appears."}
           </p>
         </section>
       </div>

@@ -5,7 +5,7 @@ type Props = {
 
 /**
  * Vector redraw of the NUCLÉUS symbol (two interlocking strokes forming an N/M),
- * in the OBSIDIAN INTELLIGENCE two-tone variant: ivory stroke + champagne-gold stroke.
+ * in the brand two-tone: navy stroke + orange stroke (NUCLEUS Prime guidelines).
  */
 export function Symbol({ className, title }: Props) {
   return (
@@ -16,8 +16,8 @@ export function Symbol({ className, title }: Props) {
       aria-hidden={title ? undefined : true}
       aria-label={title}
     >
-      <polygon fill="var(--ivory)" points="0,0 127,125 88,164 56,133 56,309 0,364" />
-      <polygon fill="var(--gold)" points="76,210 288,0 288,364 161,238 200,198 232,229 232,133 76,289" />
+      <polygon fill="var(--ink)" points="0,0 127,125 88,164 56,133 56,309 0,364" />
+      <polygon fill="var(--accent)" points="76,210 288,0 288,364 161,238 200,198 232,229 232,133 76,289" />
     </svg>
   );
 }
